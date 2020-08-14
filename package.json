@@ -48,5 +48,10 @@
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
     "redux-devtools": "^3.6.0"
+  },
+  "resolutions": {
+    "serialize-javascript": "^3.1.0",
+    "elliptic": "^6.5.3",
+    "websocket-extensions": "^0.1.4"
   }
 }
