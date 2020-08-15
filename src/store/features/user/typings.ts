@@ -3,6 +3,13 @@ export interface LoginRequest {
   password: string
 }
 
+export interface LoginResponse {
+  data: {
+    result: string | null
+    error: string | null
+  }
+}
+
 export interface UserJwtToken {
   id: number
   username: string

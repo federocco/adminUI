@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Redirect, RouteProps } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 
 import Avatar from "@material-ui/core/Avatar"
 import Button from "@material-ui/core/Button"
@@ -18,15 +18,15 @@ import Container from "@material-ui/core/Container"
 import { FormGroup } from "@material-ui/core"
 
 import { RouterState } from "router/constants"
-import { State } from "store"
-import { loginUserAction } from "store/features/user/userSlice"
+import { State, useAppDispatch } from "store"
+import { loginUserAction } from "store/features/user/actions"
 import isLoggedIn from "utils/isLoggedIn"
 
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {"Copyright © "}
-      <Link color='inherit' href='https://github.com/federocco'>
+      <Link color='inherit' href='https://www.zoroaster.it/'>
         Federico Zoroaster
       </Link>{" "}
       {new Date().getFullYear()}
@@ -57,10 +57,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login(props: RouteProps) {
   const classes = useStyles()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+  const [loginError, setLoginError] = useState<string>()
 
   const companyId = useSelector((state: State) => state.session.companyId)
 
@@ -68,8 +69,11 @@ export default function Login(props: RouteProps) {
     return <Redirect to={RouterState.home} />
   }
 
-  const handleSubmit = () => {
-    dispatch(loginUserAction({ username, password }))
+  const handleSubmit = async () => {
+    const resultAction = await dispatch(loginUserAction({ username, password }))
+    if (loginUserAction.rejected.match(resultAction)) {
+      setLoginError(resultAction.payload?.errorMessage)
+    }
   }
 
   const onChangeUsername = (username: string) => setUsername(username)
@@ -135,6 +139,11 @@ export default function Login(props: RouteProps) {
             </Grid>
           </Grid>
         </FormGroup>
+        {loginError && (
+          <div style={{ color: "red", fontSize: "large", fontWeight: "bold" }}>
+            {loginError}
+          </div>
+        )}
       </div>
       <Box mt={8}>
         <Copyright />
