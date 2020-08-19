@@ -3,11 +3,11 @@ import { useDispatch } from "react-redux"
 
 import sessionReducer from "./features/user/userSlice"
 import driversReducer from "./features/drivers/driversSlice"
-import { User } from "./features/user/typings"
+import { UserState } from "./features/user/typings"
 import { Drivers } from "./features/drivers/typings"
 
 export type State = {
-  session: User
+  session: UserState
   drivers: Drivers
 }
 

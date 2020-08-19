@@ -1,7 +1,5 @@
 import React from "react"
-
 import { makeStyles } from "@material-ui/core/styles"
-
 import { Switch, Route } from "react-router-dom"
 
 import Login from "./store/features/user/Login"
@@ -20,15 +18,17 @@ export default function App() {
   const classes = useStyles()
 
   return (
-    <div className={classes.root}>
-      <Switch>
-        <Route path={RouterState.login} component={Login} />
-        <PrivateRoute path={RouterState.home} component={Views} />
-        <Route path='/' exact={true} component={Login} />
-        <Route>
-          <PageNotFound />
-        </Route>
-      </Switch>
-    </div>
+    <>
+      <div className={classes.root}>
+        <Switch>
+          <Route path={[RouterState.login, "/"]} exact component={Login} />
+          <PrivateRoute path={RouterState.home} component={Views} />
+          <Route>
+            <PageNotFound />
+          </Route>
+        </Switch>
+      </div>
+      {/* <SessionChecher /> */}
+    </>
   )
 }

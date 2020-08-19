@@ -16,10 +16,11 @@ export const loginUserAction = createAsyncThunk<
   LoginActionResponse, // Return type of the payload creator
   LoginRequest, // First argument to the payload creator
   AsyncThunkApiConfig<RejectError>
->("users/login", async ({ username, password }, thunkApi) => {
+>("users/login", async ({ username, password, token }, thunkApi) => {
   const response = await api.post<any, LoginResponse>("/users/login", {
     username,
     password,
+    token,
   })
 
   const {

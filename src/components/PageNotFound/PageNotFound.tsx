@@ -5,6 +5,9 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core"
+import { Link } from "react-router-dom"
+
+import { RouterState } from "router/constants"
 
 const useStyles = makeStyles({
   root: {
@@ -24,8 +27,11 @@ const PageNotFound: FC = () => {
     <div className={classes.root}>
       <CssBaseline />
       <Container fixed className={classes.container}>
-        <Typography variant='h1' gutterBottom>
+        <Typography variant='h1' gutterBottom color='error'>
           Code: 404
+        </Typography>
+        <Typography variant='h5' gutterBottom>
+          <Link to={RouterState.home}>Go back</Link>
         </Typography>
         <Typography variant='h2' gutterBottom>
           Page not found

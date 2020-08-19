@@ -1,6 +1,7 @@
 export interface LoginRequest {
-  username: string
-  password: string
+  username?: string
+  password?: string
+  token?: string
 }
 
 export interface LoginResponse {
@@ -14,10 +15,10 @@ export interface UserJwtToken {
   id: number
   username: string
   email: string
-  idazien: number
+  companyId: number
   type: string
 }
 
-export interface User extends Omit<UserJwtToken, "idazien"> {
-  companyId: number
+export interface UserState extends UserJwtToken {
+  logged: boolean
 }

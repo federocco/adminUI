@@ -1,1 +1,1 @@
-export const loggedIn = "loggedIn"
+export const userToken = "userToken"

@@ -19,7 +19,7 @@ import ExitToApp from "@material-ui/icons/ExitToApp"
 
 import { logoutUser } from "store/features/user/userSlice"
 import { Props } from "./typings"
-import { loggedIn } from "../../../store/constants"
+import { userToken } from "../../../store/constants"
 import { RouterState } from "../../../router/constants"
 
 const drawerWidth = 240
@@ -66,7 +66,7 @@ function Sidebar(props: Props) {
 
   const handleLogout = () => {
     dispatch(logoutUser())
-    localStorage.removeItem(loggedIn)
+    localStorage.removeItem(userToken)
   }
 
   return (

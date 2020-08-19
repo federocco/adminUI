@@ -1,23 +1,25 @@
 import React from "react"
 import { Route, Redirect, RouteProps } from "react-router-dom"
-import isLoggedIn from "../utils/isLoggedIn"
+import { useSelector } from "react-redux"
+
+import { State } from "store"
 import { RouterState } from "./constants"
 
 const PrivateRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
+  const isLogged = useSelector((state: State) => state.session.logged)
+
   if (!Component) {
     return null
   }
-
-  const loggedIn = isLoggedIn()
 
   return (
     <Route
       {...rest}
       render={(props) =>
-        loggedIn ? (
+        isLogged ? (
           <Component {...props} />
         ) : (
           <Redirect

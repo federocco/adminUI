@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { Redirect, RouteProps } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { RouteProps, useHistory } from "react-router-dom"
 
 import Avatar from "@material-ui/core/Avatar"
 import Button from "@material-ui/core/Button"
@@ -18,9 +17,8 @@ import Container from "@material-ui/core/Container"
 import { FormGroup } from "@material-ui/core"
 
 import { RouterState } from "router/constants"
-import { State, useAppDispatch } from "store"
+import { useAppDispatch } from "store"
 import { loginUserAction } from "store/features/user/actions"
-import isLoggedIn from "utils/isLoggedIn"
 
 function Copyright() {
   return (
@@ -58,21 +56,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props: RouteProps) {
   const classes = useStyles()
   const dispatch = useAppDispatch()
+  let history = useHistory()
 
   const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [loginError, setLoginError] = useState<string>()
 
-  const companyId = useSelector((state: State) => state.session.companyId)
-
-  if (companyId !== -1 || isLoggedIn()) {
-    return <Redirect to={RouterState.home} />
-  }
-
   const handleSubmit = async () => {
     const resultAction = await dispatch(loginUserAction({ username, password }))
     if (loginUserAction.rejected.match(resultAction)) {
       setLoginError(resultAction.payload?.errorMessage)
+    } else {
+      history.push(RouterState.home)
     }
   }
 

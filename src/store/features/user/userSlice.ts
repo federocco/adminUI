@@ -1,23 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-import { loggedIn } from "store/constants"
-
-import { User } from "./typings"
+import { userToken } from "store/constants"
 import { loginUserAction, LoginActionResponse } from "./actions"
-
-const initialState: User = {
-  id: -1,
-  username: "",
-  companyId: -1,
-  email: "",
-  type: "",
-}
+import { getInitialStateFromLocalStorage, initialState } from "./initialState"
 
 const slicePrefixUserLogin = "[User login]"
 
 const userSlice = createSlice({
   name: "user",
-  initialState,
+  initialState: getInitialStateFromLocalStorage(),
   reducers: {
     logoutUser: (state) => initialState,
   },
@@ -37,12 +28,13 @@ const userSlice = createSlice({
           state.id = jwtData.id
           state.username = jwtData.username
           state.email = jwtData.email
-          state.companyId = jwtData.idazien
+          state.companyId = jwtData.companyId
           state.type = jwtData.type
+          state.logged = true
         }
 
         if (jwtString) {
-          localStorage.setItem(loggedIn, jwtString)
+          localStorage.setItem(userToken, jwtString)
         }
       }
     )
