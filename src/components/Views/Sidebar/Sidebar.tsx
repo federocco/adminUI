@@ -13,8 +13,8 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
-import InboxIcon from "@material-ui/icons/MoveToInbox"
-import MailIcon from "@material-ui/icons/Mail"
+import PeopleIcon from "@material-ui/icons/People"
+import AssessmentIcon from "@material-ui/icons/Assessment"
 import ExitToApp from "@material-ui/icons/ExitToApp"
 
 import { logoutUser } from "store/features/user/userSlice"
@@ -90,30 +90,25 @@ function Sidebar(props: Props) {
       </div>
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <Link to={`${RouterState.section}/${text}`} key={index}>
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          </Link>
-        ))}
+        <Link to={RouterState.drivers}>
+          <ListItem button>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary='Drivers' />
+          </ListItem>
+        </Link>
+
+        <Link to={RouterState.reports}>
+          <ListItem button>
+            <ListItemIcon>
+              <AssessmentIcon />
+            </ListItemIcon>
+            <ListItemText primary='Reports' />
+          </ListItem>
+        </Link>
       </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <Link to={`${RouterState.section}/${text}`} key={index}>
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          </Link>
-        ))}
-      </List>
+
       <Divider />
 
       <Link to={RouterState.login} onClick={handleLogout}>

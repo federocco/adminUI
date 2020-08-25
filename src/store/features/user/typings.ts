@@ -11,7 +11,7 @@ export interface LoginResponse {
   }
 }
 
-export interface UserJwtToken {
+export interface UserToken {
   id: number
   username: string
   email: string
@@ -19,6 +19,6 @@ export interface UserJwtToken {
   type: string
 }
 
-export interface UserState extends UserJwtToken {
-  logged: boolean
+export interface UserState extends UserToken {
+  token: string
 }

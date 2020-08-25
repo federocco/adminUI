@@ -9,7 +9,7 @@ const PrivateRoute: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-  const isLogged = useSelector((state: State) => state.session.logged)
+  const isLogged = useSelector((state: State) => state.session.token.length > 0)
 
   if (!Component) {
     return null

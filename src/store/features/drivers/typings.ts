@@ -4,6 +4,15 @@ export interface Driver {
   password: string
 }
 
-export interface Drivers {
-  drivers: Driver[]
+export type Drivers = Driver[]
+
+export interface DriversResponse {
+  data: {
+    result: Drivers | null
+    error: string | null
+  }
+}
+
+export type DriversState = {
+  drivers: Drivers
 }

@@ -1,10 +1,50 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
+import jwtDecode from "jwt-decode"
 
+import { AsyncThunkApiConfig } from "store"
 import { userToken } from "store/constants"
-import { loginUserAction, LoginActionResponse } from "./actions"
+import { RejectError } from "store/typings"
+import { apiCall } from "utils/api"
+
 import { getInitialStateFromLocalStorage, initialState } from "./initialState"
+import { LoginRequest, UserToken, LoginResponse } from "./typings"
+
+export interface LoginActionResponse {
+  token?: string
+  tokenData?: UserToken
+}
 
 const slicePrefixUserLogin = "[User login]"
+
+// Actions
+export const loginUser = createAsyncThunk<
+  LoginActionResponse, // Return type of the payload creator
+  LoginRequest, // First argument to the payload creator
+  AsyncThunkApiConfig<RejectError>
+>("users/login", async ({ username, password, token: reqToken }, thunkApi) => {
+  const response = await apiCall.post<any, LoginResponse>("/users/login", {
+    username,
+    password,
+    token: reqToken,
+  })
+
+  const {
+    data: { result: token, error: errorMessage },
+  } = response
+
+  if (!token || token.length === 0 || errorMessage) {
+    return thunkApi.rejectWithValue({
+      errorMessage,
+    } as RejectError)
+  }
+
+  const tokenData = jwtDecode<UserToken>(token)
+
+  return {
+    token,
+    tokenData,
+  } as LoginActionResponse
+})
 
 const userSlice = createSlice({
   name: "user",
@@ -13,32 +53,30 @@ const userSlice = createSlice({
     logoutUser: (state) => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUserAction.pending, (state) => {
+    builder.addCase(loginUser.pending, (state) => {
       console.log(`${slicePrefixUserLogin} pending`)
     })
     builder.addCase(
-      loginUserAction.fulfilled,
+      loginUser.fulfilled,
       (
         state,
-        { payload: { jwtString, jwtData } }: PayloadAction<LoginActionResponse>
+        { payload: { token, tokenData } }: PayloadAction<LoginActionResponse>
       ) => {
         console.log(`${slicePrefixUserLogin} fulfilled`)
 
-        if (jwtData) {
-          state.id = jwtData.id
-          state.username = jwtData.username
-          state.email = jwtData.email
-          state.companyId = jwtData.companyId
-          state.type = jwtData.type
-          state.logged = true
-        }
+        if (token && token.length > 0 && tokenData) {
+          state.id = tokenData.id
+          state.username = tokenData.username
+          state.email = tokenData.email
+          state.companyId = tokenData.companyId
+          state.type = tokenData.type
 
-        if (jwtString) {
-          localStorage.setItem(userToken, jwtString)
+          state.token = token
+          localStorage.setItem(userToken, token)
         }
       }
     )
-    builder.addCase(loginUserAction.rejected, (state, action) => {
+    builder.addCase(loginUser.rejected, (state, action) => {
       console.log(`${slicePrefixUserLogin} rejected`)
     })
   },

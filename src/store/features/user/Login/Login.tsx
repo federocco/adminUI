@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { RouteProps, useHistory } from "react-router-dom"
 
 import Avatar from "@material-ui/core/Avatar"
@@ -18,7 +18,7 @@ import { FormGroup } from "@material-ui/core"
 
 import { RouterState } from "router/constants"
 import { useAppDispatch } from "store"
-import { loginUserAction } from "store/features/user/actions"
+import { loginUser } from "../userSlice"
 
 function Copyright() {
   return (
@@ -62,18 +62,24 @@ export default function Login(props: RouteProps) {
   const [password, setPassword] = useState<string>("")
   const [loginError, setLoginError] = useState<string>()
 
-  const handleSubmit = async () => {
-    const resultAction = await dispatch(loginUserAction({ username, password }))
-    if (loginUserAction.rejected.match(resultAction)) {
+  const handleSubmit = useCallback(async () => {
+    const resultAction = await dispatch(loginUser({ username, password }))
+    if (loginUser.rejected.match(resultAction)) {
       setLoginError(resultAction.payload?.errorMessage)
     } else {
       history.push(RouterState.home)
     }
-  }
+  }, [dispatch, username, password, history])
 
-  const onChangeUsername = (username: string) => setUsername(username)
+  const onChangeUsername = useCallback(
+    (username: string) => setUsername(username),
+    []
+  )
 
-  const onChangePassword = (password: string) => setPassword(password)
+  const onChangePassword = useCallback(
+    (password: string) => setPassword(password),
+    []
+  )
 
   return (
     <Container component='main' maxWidth='xs'>

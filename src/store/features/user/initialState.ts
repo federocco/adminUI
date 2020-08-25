@@ -11,15 +11,15 @@ export const initialState: UserState = {
   companyId: defaultCompanyId,
   email: "",
   type: "",
-  logged: false,
+  token: "",
 }
 
 export const getInitialStateFromLocalStorage = (): UserState => {
-  const jwtString = localStorage.getItem(userToken)
+  const token = localStorage.getItem(userToken)
 
-  if (jwtString) {
+  if (token) {
     const { id, username, companyId, email, type } = jwtDecode(
-      jwtString
+      token
     ) as UserState
 
     return {
@@ -28,7 +28,7 @@ export const getInitialStateFromLocalStorage = (): UserState => {
       companyId,
       email,
       type,
-      logged: true,
+      token,
     }
   }
 

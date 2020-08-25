@@ -7,6 +7,7 @@ import Views from "./components/Views"
 import PrivateRoute from "./router/PrivateRoute"
 import { RouterState } from "./router/constants"
 import PageNotFound from "./components/PageNotFound/PageNotFound"
+import { SessionChecker } from "SessionChecker"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +29,7 @@ export default function App() {
           </Route>
         </Switch>
       </div>
-      {/* <SessionChecher /> */}
+      <SessionChecker />
     </>
   )
 }

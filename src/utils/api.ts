@@ -1,11 +1,25 @@
 import axios from "axios"
 
-const api = axios.create({
+import { State } from "store"
+
+export const apiCall = axios.create({
   baseURL: "http://localhost:3333",
   headers: {
     "Content-Type": "application/json",
   },
 })
+
+export const getApiCallAuth = (state: State) => {
+  const token = state.session.token
+
+  return axios.create({
+    baseURL: "http://localhost:3333",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
 
 // api.interceptors.request.use(
 //   (config) => {
@@ -17,5 +31,3 @@ const api = axios.create({
 //   },
 //   (error) => Promise.reject(error)
 // )
-
-export default api
