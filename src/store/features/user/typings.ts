@@ -5,10 +5,8 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  data: {
-    result: string | null
-    error: string | null
-  }
+  result: string | undefined
+  error: string | undefined
 }
 
 export interface UserToken {

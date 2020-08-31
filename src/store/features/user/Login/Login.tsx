@@ -65,7 +65,7 @@ export default function Login(props: RouteProps) {
   const handleSubmit = useCallback(async () => {
     const resultAction = await dispatch(loginUser({ username, password }))
     if (loginUser.rejected.match(resultAction)) {
-      setLoginError(resultAction.payload?.errorMessage)
+      setLoginError(resultAction.payload?.message)
     } else {
       history.push(RouterState.home)
     }

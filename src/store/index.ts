@@ -4,11 +4,11 @@ import { useDispatch } from "react-redux"
 import sessionReducer from "./features/user/userSlice"
 import driversReducer from "./features/drivers/driversSlice"
 import { UserState } from "./features/user/typings"
-import { Drivers } from "./features/drivers/typings"
+import { DriversState } from "./features/drivers/typings"
 
 export type State = {
   session: UserState
-  drivers: Drivers
+  drivers: DriversState
 }
 
 export type AsyncThunkApiConfig<RejectError = unknown> = {

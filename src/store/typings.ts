@@ -1,3 +1,5 @@
 export interface RejectError {
-  errorMessage: string
+  status: number
+  statusText: string
+  message: string | undefined
 }

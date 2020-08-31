@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
-import { Drivers, DriversResponse } from "./typings"
+import { Drivers, DriversResponse, DriversState } from "./typings"
 import { AsyncThunkApiConfig } from "store"
 import { RejectError } from "store/typings"
 import { getApiCallAuth } from "utils/api"
+import { AxiosResponse, AxiosError } from "axios"
 
-const initialState: Drivers = []
+const initialState: DriversState = {
+  drivers: [],
+}
 
 const slicePrefix = "[Get Drivers]"
 
@@ -14,29 +17,50 @@ export const getDrivers = createAsyncThunk<
   void, // First argument to the payload creator
   AsyncThunkApiConfig<RejectError>
 >("drivers/all", async (_, thunkApi) => {
-  const apiAuth = getApiCallAuth(thunkApi.getState())
+  try {
+    const apiAuth = getApiCallAuth(thunkApi.getState())
 
-  const response = await apiAuth.get<any, DriversResponse>("drivers/all")
+    try {
+      const response = await apiAuth.get<any, AxiosResponse<DriversResponse>>(
+        "drivers/all"
+      )
 
-  const {
-    data: { result: drivers, error: errorMessage },
-  } = response
+      const {
+        data: { result },
+      } = response!
 
-  if (!drivers || drivers.length === 0 || errorMessage) {
+      return result
+    } catch (err) {
+      let error: AxiosError<RejectError> = err
+      if (!error.response) {
+        throw err
+      }
+
+      return thunkApi.rejectWithValue({
+        status: error.response.status,
+        statusText: error.response.statusText,
+        message: undefined,
+      })
+    }
+
+    // if (response) {
+    //   return
+    // }
+  } catch (err) {
     return thunkApi.rejectWithValue({
-      errorMessage,
-    } as RejectError)
+      status: -1,
+      statusText: "blows",
+      message: "",
+    })
   }
-
-  return drivers
 })
 
 const sessionSlice = createSlice({
   name: "drivers",
   initialState,
   reducers: {
-    setDrivers: (state, { payload }: PayloadAction<Drivers>) => {
-      // state.drivers = payload
+    setDrivers: (state, { payload: drivers }: PayloadAction<Drivers>) => {
+      state.drivers = drivers
     },
   },
   extraReducers: (builder) => {
@@ -49,12 +73,12 @@ const sessionSlice = createSlice({
         console.log(`${slicePrefix} fulfilled`)
 
         if (drivers && drivers.length > 0) {
-          console.log("ok drivers", drivers)
+          state.drivers = drivers
         }
       }
     )
     builder.addCase(getDrivers.rejected, (state, action) => {
-      console.log(`${slicePrefix} rejected`)
+      console.log(`${slicePrefix} rejected`, action.payload)
     })
   },
 })

@@ -8,6 +8,7 @@ import { apiCall } from "utils/api"
 
 import { getInitialStateFromLocalStorage, initialState } from "./initialState"
 import { LoginRequest, UserToken, LoginResponse } from "./typings"
+import { AxiosResponse } from "axios"
 
 export interface LoginActionResponse {
   token?: string
@@ -22,28 +23,37 @@ export const loginUser = createAsyncThunk<
   LoginRequest, // First argument to the payload creator
   AsyncThunkApiConfig<RejectError>
 >("users/login", async ({ username, password, token: reqToken }, thunkApi) => {
-  const response = await apiCall.post<any, LoginResponse>("/users/login", {
-    username,
-    password,
-    token: reqToken,
-  })
+  try {
+    const response = await apiCall.post<any, AxiosResponse<LoginResponse>>(
+      "/users/login",
+      {
+        username,
+        password,
+        token: reqToken,
+      }
+    )
 
-  const {
-    data: { result: token, error: errorMessage },
-  } = response
+    const {
+      data: { result: token, error: errorMessage },
+    } = response
 
-  if (!token || token.length === 0 || errorMessage) {
+    if (!token || token.length === 0 || errorMessage) {
+      throw new Error(errorMessage)
+    }
+
+    const tokenData = jwtDecode<UserToken>(token)
+
+    return {
+      token,
+      tokenData,
+    }
+  } catch (err) {
     return thunkApi.rejectWithValue({
-      errorMessage,
-    } as RejectError)
+      status: err.reponse.status,
+      statusText: err.reponse.statusText,
+      message: err,
+    })
   }
-
-  const tokenData = jwtDecode<UserToken>(token)
-
-  return {
-    token,
-    tokenData,
-  } as LoginActionResponse
 })
 
 const userSlice = createSlice({
